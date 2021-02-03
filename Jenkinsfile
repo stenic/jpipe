@@ -6,10 +6,7 @@ library identifier: 'custom-lib@main', retriever: modernSCM(
    credentialsId: 'github-jenkins-key']), changelog: false
 
 ansiColor('xterm') {
-  basePipeline projectName: 'pipeline-test',
+  basePipeline projectName: 'junit',
       testScript: "mvn clean test",
-      prereleaseBranches: 'event',
-      dockerCredentialId: "registry-harbor-homelab",
-      dockerRepository: 'harbor.dev.stenic.io/test/pipeline-test',
-      dockerServer: 'http://harbor.dev.stenic.io'
+      prereleaseBranches: 'develop'
 }
