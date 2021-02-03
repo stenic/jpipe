@@ -1,6 +1,6 @@
 #!groovy​
 
-library identifier: 'custom-lib@main', retriever: modernSCM(
+library identifier: 'custom-lib@develop', retriever: modernSCM(
   [$class: 'GitSCMSource',
    remote: 'git@github.com:stenic/jpipe.git',
    credentialsId: 'github-jenkins-key']), changelog: false
