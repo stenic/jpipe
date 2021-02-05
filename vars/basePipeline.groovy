@@ -22,7 +22,7 @@ def call(Map config = [:]) {
                 credentialId: config.get('dockerCredentialId'),
                 repository: config.get('dockerRepository'),
                 server: config.get('dockerServer'),
-                testScript: config.get('testScript', 'make test'),
+                testScript: config.get('testScript', ''),
             ]),
             new SonarQubePlugin([
                 projectKey: config.get("projectName"),
