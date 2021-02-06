@@ -19,9 +19,9 @@ def call(Map config = [:]) {
                 prereleaseBranches: config.get('prereleaseBranches', 'develop'),
             ]),
             new DockerPlugin([
-                credentialId: config.get('dockerCredentialId'),
+                credentialId: config.get('dockerCredentialId', ''),
                 repository: config.get('dockerRepository'),
-                server: config.get('dockerServer'),
+                server: config.get('dockerServer', 'http://index.docker.io'),
                 testScript: config.get('testScript', ''),
             ]),
             new SonarQubePlugin([
