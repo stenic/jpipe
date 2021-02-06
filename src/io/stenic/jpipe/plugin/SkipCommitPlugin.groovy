@@ -17,6 +17,7 @@ class SkipCommitPlugin extends Plugin {
         def commitMsg = event.script.sh(script: "git log -n 1 HEAD", returnStdout: true)
         if (commitMsg.matches(/(?ms)(.*\[(skip ci|ci skip)\].*)/)) {
             event.script.currentBuild.description = 'Skipped by [skip ci]'
+            event.script.currentBuild.result = event.script.currentBuild.getPreviousBuild().result
 
             try {
                 // Try doing a cleanup, required the following methods being approved.
