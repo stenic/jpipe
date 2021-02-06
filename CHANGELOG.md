@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/stenic/jpipe/compare/v1.1.0...v1.1.1) (2021-02-06)
+
+
+### Bug Fixes
+
+* **security:** Upgrade dependencies ([bb48243](https://github.com/stenic/jpipe/commit/bb4824317288fe19c5965fd1e69949d1f47104b9))
+
 # [1.1.0](https://github.com/stenic/jpipe/compare/v1.0.0...v1.1.0) (2021-02-06)
 
 
