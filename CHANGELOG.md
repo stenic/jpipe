@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/stenic/jpipe/compare/v1.1.2...v1.1.3) (2021-02-06)
+
+
+### Bug Fixes
+
+* **skip-commit:** Set build result before deleting ([ced2dd6](https://github.com/stenic/jpipe/commit/ced2dd62fe07e45b138b966ccc3f41e8bea17215))
+
 ## [1.1.2](https://github.com/stenic/jpipe/compare/v1.1.1...v1.1.2) (2021-02-06)
 
 
