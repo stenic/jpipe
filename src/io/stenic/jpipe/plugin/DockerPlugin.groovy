@@ -16,9 +16,9 @@ class DockerPlugin extends Plugin {
     DockerPlugin(Map opts = [:]) {
         this.repository = opts.get('repository', '');
         this.credentialId = opts.get('credentialId', '');
-        this.server = opts.get('server', 'index.docker.io');
+        this.server = opts.get('server', 'http://index.docker.io');
         this.buildArgs = opts.get('buildArgs', '');
-        this.push = opts.get('push', true);
+        this.push = opts.get('push', this.credentialId != '');
         this.filePath = opts.get('filePath', '.');
         this.extraTargets = opts.get('extraTargets', []);
         this.testScript = opts.get('testScript', '');
