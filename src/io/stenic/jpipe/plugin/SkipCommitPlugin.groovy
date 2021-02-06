@@ -24,6 +24,7 @@ class SkipCommitPlugin extends Plugin {
                 // method hudson.model.Run delete
                 // method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild
                 event.script.currentBuild.getRawBuild().delete()
+                event.script.currentBuild.getRawBuild().setResult(hudson.model.Result.fromString(event.script.currentBuild.getPreviousBuild().result))
             } catch (RejectedAccessException e) {}
 
             return false
