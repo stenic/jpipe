@@ -6,10 +6,12 @@ class SonarQubePlugin extends Plugin {
 
     private String credentialsId;
     private String projectKey;
+    private Boolean allowFailure;
     
     SonarQubePlugin(Map opts = [:]) {
         this.credentialsId = opts.get('credentialId', 'sonarqube-token');
         this.projectKey = opts.get('projectKey');
+        this.allowFailure = opts.get('allowFailure', true);
     }
 
     public Map getSubscribedEvents() {
