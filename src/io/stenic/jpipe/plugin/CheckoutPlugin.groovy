@@ -8,8 +8,8 @@ class CheckoutPlugin extends Plugin {
     private String gitEmail;
 
     CheckoutPlugin() {
-        this.gitUser = 'stenic-ci';
-        this.gitEmail = 'ci@stenic.io'
+        this.gitUser = 'jpipe-ci';
+        this.gitEmail = 'jpipe@stenic.io'
     }
 
     CheckoutPlugin(String gitUser, String gitEmail) {
