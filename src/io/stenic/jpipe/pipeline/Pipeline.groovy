@@ -36,16 +36,22 @@ class Pipeline implements Serializable {
             this.eventDispatcher.dispatch("Build", event)
         }
 
-        this.script.stage("Test") {
-            this.eventDispatcher.dispatch("Test", event)
+        if (this.eventDispatcher.getListeners("Test").size() > 0) {
+            this.script.stage("Test") {
+                this.eventDispatcher.dispatch("Test", event)
+            }
         }
         
-        this.script.stage("Publish") {
-            this.eventDispatcher.dispatch("Publish", event)
+        if (this.eventDispatcher.getListeners("Publish").size() > 0) {
+            this.script.stage("Publish") {
+                this.eventDispatcher.dispatch("Publish", event)
+            }
         }
         
-        this.script.stage("Deploy") {
-            this.eventDispatcher.dispatch("Deploy", event)
+        if (this.eventDispatcher.getListeners("Deploy").size() > 0) {
+            this.script.stage("Deploy") {
+                this.eventDispatcher.dispatch("Deploy", event)
+            }
         }
         
         return 
