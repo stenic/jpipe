@@ -12,6 +12,7 @@ class DockerPlugin extends Plugin {
     private String filePath;
     private String testScript;
     private List extraTargets;
+    private Boolean useCache;
 
     DockerPlugin(Map opts = [:]) {
         this.repository = opts.get('repository', '');
@@ -22,6 +23,7 @@ class DockerPlugin extends Plugin {
         this.filePath = opts.get('filePath', '.');
         this.extraTargets = opts.get('extraTargets', []);
         this.testScript = opts.get('testScript', '');
+        this.useCache = opts.get('useCache', true);
     }
 
     public Map getSubscribedEvents() {
@@ -40,12 +42,22 @@ class DockerPlugin extends Plugin {
 
     public void doDockerBuild(Event event) {
         event.script.docker.withRegistry(this.server, this.credentialId) {
+            if (this.useCache) {
+                try {
+                    event.script.docker.image("${this.repository}:cache").pull()
+                } catch(Exception e) {}
+            }
             event.script.docker.build(
                 "${this.repository}:${event.version}",
                 "${this.buildArgs} ${this.filePath}"
             )
 
-            this.extraTargets.each { target -> 
+            this.extraTargets.each { target ->
+                if (this.useCache) {
+                    try {
+                        event.script.docker.image("${this.repository}:cache-${target}").pull()
+                    } catch(Exception e) {}
+                }
                 event.script.docker.build(
                     "${this.repository}:${target}",
                     "--target=${target} ${this.buildArgs} ${this.filePath}"
@@ -64,6 +76,9 @@ class DockerPlugin extends Plugin {
 
     public void doDockerPush(Event event) {
         if (this.push) {
+            if (this.useCache) {
+                event.script.docker.image("${this.repository}:cache").push()
+            }
             event.script.docker.withRegistry(this.server, this.credentialId) {
                 event.script.docker.image("${this.repository}:${event.version}").push()
             }
