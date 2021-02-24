@@ -76,10 +76,15 @@ class DockerPlugin extends Plugin {
 
     public void doDockerPush(Event event) {
         if (this.push) {
-            if (this.useCache) {
-                event.script.docker.image("${this.repository}:cache").push()
-            }
             event.script.docker.withRegistry(this.server, this.credentialId) {
+                if (this.useCache) {
+                    event.script.docker.image("${this.repository}:cache").push()
+                    this.extraTargets.each { target ->
+                        try {
+                            event.script.docker.image("${this.repository}:cache-${target}").push()
+                        } catch(Exception e) {}
+                    }
+                }
                 event.script.docker.image("${this.repository}:${event.version}").push()
             }
         }
