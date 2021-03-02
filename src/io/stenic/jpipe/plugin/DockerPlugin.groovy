@@ -45,19 +45,17 @@ class DockerPlugin extends Plugin {
             if (this.useCache) {
                 try {
                     event.script.docker.image("${this.repository}:cache").pull()
+                    this.extraTargets.each { target ->
+                        event.script.docker.image("${this.repository}:cache-${target}").pull()
+                    }
                 } catch(Exception e) {}
             }
+
             event.script.docker.build(
                 "${this.repository}:${event.version}",
                 "${this.buildArgs} ${this.filePath}"
             )
-
             this.extraTargets.each { target ->
-                if (this.useCache) {
-                    try {
-                        event.script.docker.image("${this.repository}:cache-${target}").pull()
-                    } catch(Exception e) {}
-                }
                 event.script.docker.build(
                     "${this.repository}:${target}",
                     "--target=${target} ${this.buildArgs} ${this.filePath}"
@@ -77,15 +75,15 @@ class DockerPlugin extends Plugin {
     public void doDockerPush(Event event) {
         if (this.push) {
             event.script.docker.withRegistry(this.server, this.credentialId) {
-                if (this.useCache) {
-                    event.script.docker.image("${this.repository}:cache").push()
-                    this.extraTargets.each { target ->
-                        try {
-                            event.script.docker.image("${this.repository}:cache-${target}").push()
-                        } catch(Exception e) {}
-                    }
-                }
                 event.script.docker.image("${this.repository}:${event.version}").push()
+                if (this.useCache) {
+                    try {
+                        event.script.docker.image("${this.repository}:${event.version}").push('cache')
+                        this.extraTargets.each { target ->
+                            event.script.docker.image("${this.repository}:${target}").push("cache-${target}")
+                        }
+                    } catch(Exception e) {}
+                }
             }
         }
     }
