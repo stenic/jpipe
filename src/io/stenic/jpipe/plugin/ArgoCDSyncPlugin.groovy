@@ -10,6 +10,7 @@ class ArgoCDSyncPlugin extends Plugin {
     private String argoCDProject;
     private String cdBranch;
     private String cliOpts;
+    private String appSyncOpts;
 
     ArgoCDSyncPlugin(Map opts = [:]) {
         this.credentialsId = opts.get('credentialsId', '');
@@ -17,6 +18,7 @@ class ArgoCDSyncPlugin extends Plugin {
         this.argoCDProject = opts.get('argoCDProject', '');
         this.cliOpts = opts.get('cliOpts', '--grpc-web --insecure');
         this.cdBranch = opts.get('cdBranch', 'main');
+        this.appSyncOpts = opts.get('appSyncOpts', '');
     }
 
     public Map getSubscribedEvents() {
@@ -32,7 +34,7 @@ class ArgoCDSyncPlugin extends Plugin {
             event.script.println("Skipping ArgoCDSyncPlugin")
             return true;
         }
-    
+
         event.script.docker.image("busybox").inside {
             event.script.withCredentials([event.script.string(credentialsId: this.credentialsId, variable: 'ARGOCD_AUTH_TOKEN')]) {
                 event.script.sh """
@@ -42,7 +44,7 @@ class ArgoCDSyncPlugin extends Plugin {
 
                     wget --no-verbose -O \$ARGOCD_CLI --no-check-certificate https://\${ARGOCD_SERVER}/download/argocd-linux-amd64
                     chmod +x \$ARGOCD_CLI
-                    \$ARGOCD_CLI app sync ${this.argoCDProject}
+                    \$ARGOCD_CLI app sync ${this.argoCDProject} ${this.appSyncOpts}
                     \$ARGOCD_CLI app wait ${this.argoCDProject}
                 """
             }
