@@ -49,7 +49,7 @@ class ConventionalCommitPlugin extends Plugin {
                 return version
             }
 
-            return this.deduplicate(script, env.BRANCH_NAME)
+            return this.deduplicate(script, env.BRANCH_NAME.replaceAll('[^0-9a-zA-Z-]', '-'))
         }
     }
 
