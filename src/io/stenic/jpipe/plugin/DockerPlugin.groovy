@@ -36,6 +36,7 @@ class DockerPlugin extends Plugin {
             ],
             "${Event.PUBLISH}": [
                 [{ event -> this.doDockerPush(event) }, -10],
+                [{ event -> this.doDockerCleanup(event) }, 100],
             ],
         ]
     }
@@ -86,5 +87,17 @@ class DockerPlugin extends Plugin {
                 }
             }
         }
+    }
+
+    public void doDockerCleanup(Event event) {
+        try {
+            event.script.sh "docker rmi ${this.repository}:${event.version}"
+            event.script.sh "docker rmi ${this.repository}:cache"
+            this.extraTargets.each { target ->
+                event.script.sh "docker rmi ${this.repository}:${target}"
+                event.script.sh "docker rmi ${this.repository}:cache-${target}"
+            }
+            event.script.sh 'docker rmi -f $(docker images -f "dangling=true" -q)'
+        } catch(Exception e) {} 
     }
 }
