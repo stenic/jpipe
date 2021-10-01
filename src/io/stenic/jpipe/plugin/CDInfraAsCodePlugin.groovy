@@ -5,6 +5,7 @@ import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
 
 class CDInfraAsCodePlugin extends Plugin {
 
+    private String yqDockerImage;
     private String credentialId;
     private String repository;
     private String branch;
@@ -23,6 +24,7 @@ class CDInfraAsCodePlugin extends Plugin {
         this.filePath = opts.get('filePath', 'values.yaml');
         this.gitUser = opts.get('gitUser', 'jpipe-ci');
         this.gitEmail = opts.get('gitEmail', 'jpipe@stenic.io');
+        this.yqDockerImage = opts.get('dockerImage', 'mikefarah/yq:4');
     }
 
     public Map getSubscribedEvents() {
@@ -51,7 +53,7 @@ class CDInfraAsCodePlugin extends Plugin {
                 changelog: false
             );
 
-            event.script.docker.image("mikefarah/yq:4").inside("--entrypoint=''") {
+            event.script.docker.image(this.yqDockerImage).inside("--entrypoint=''") {
                 event.script.sh "yq eval --inplace '${this.yamlPath} = \"${event.version}\"' ${this.filePath}";
             }
 
