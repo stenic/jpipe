@@ -8,7 +8,7 @@ class SonarQubePlugin extends Plugin {
     private String credentialsId;
     private String projectKey;
     private Boolean allowFailure;
-    
+
     SonarQubePlugin(Map opts = [:]) {
         this.credentialsId = opts.get('credentialId', 'sonarqube-token');
         this.projectKey = opts.get('projectKey');
@@ -27,7 +27,7 @@ class SonarQubePlugin extends Plugin {
         try {
             event.script.docker.image('sonarsource/sonar-scanner-cli:latest').inside('--privileged') {
                 event.script.withSonarQubeEnv(credentialsId: this.credentialsId) {
-                    event.script.sh "sonar-scanner -Dsonar.projectKey=${this.projectKey}"
+                    event.script.sh "sonar-scanner -Dsonar.projectKey=${this.projectKey} -Dsonar.projectVersion=${event.version}"
                 }
             }
         } catch (Exception e) {
