@@ -36,7 +36,7 @@ class CDInfraAsCodePlugin extends Plugin {
     }
 
     public Boolean doYamlUpdate(Event event) {
-        if (event.env.BRANCH_NAME != this.cdBranch) {
+        if (this.cdBranch == "" || event.env.BRANCH_NAME != this.cdBranch) {
             event.script.println("Skipping CDInfraAsCodePlugin")
             return true;
         }
