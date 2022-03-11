@@ -13,6 +13,7 @@ class DockerPlugin extends Plugin {
     private String testScript;
     private List extraTargets;
     private Boolean useCache;
+    private Boolean doCleanup;
 
     DockerPlugin(Map opts = [:]) {
         this.repository = opts.get('repository', '');
@@ -24,6 +25,7 @@ class DockerPlugin extends Plugin {
         this.extraTargets = opts.get('extraTargets', []);
         this.testScript = opts.get('testScript', '');
         this.useCache = opts.get('useCache', true);
+        this.doCleanup = opts.get('doCleanup', false);
     }
 
     public Map getSubscribedEvents() {
@@ -36,6 +38,7 @@ class DockerPlugin extends Plugin {
             ],
             "${Event.PUBLISH}": [
                 [{ event -> this.doDockerPush(event) }, -10],
+                [{ event -> this.doDockerCleanup(event) }, 100],
             ],
         ]
     }
@@ -86,5 +89,24 @@ class DockerPlugin extends Plugin {
                 }
             }
         }
+    }
+
+    public void doDockerCleanup(Event event) {
+        if (!this.doCleanup) {
+            return
+        }
+        try {
+            event.script.sh "docker rmi ${this.repository}:${event.version}"
+            this.extraTargets.each { target ->
+                event.script.sh "docker rmi ${this.repository}:${target}"
+            }
+            if (this.useCache) {
+                event.script.sh "docker rmi ${this.repository}:cache"
+                this.extraTargets.each { target ->
+                    event.script.sh "docker rmi ${this.repository}:cache-${target}"
+                }
+            }
+            event.script.sh 'docker rmi -f $(docker images -f "dangling=true" -q)'
+        } catch(Exception e) {} 
     }
 }
