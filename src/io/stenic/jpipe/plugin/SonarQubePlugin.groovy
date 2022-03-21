@@ -31,7 +31,7 @@ class SonarQubePlugin extends Plugin {
                 }
             }
         } catch (Exception e) {
-            if (!this.allowFailure) {
+            if (this.allowFailure) {
                 throw e;
             }
         }
