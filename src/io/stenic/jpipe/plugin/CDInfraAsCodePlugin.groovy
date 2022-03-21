@@ -62,7 +62,7 @@ class CDInfraAsCodePlugin extends Plugin {
                 event.script.sh "git config user.name '${this.gitUser}'"
 
                 event.script.sh "git add ${this.filePath}"
-                event.script.sh "git commit -m 'Update version ${this.filePath} to ${event.version}'"
+                event.script.sh "git commit --allow-empty -m 'Update version ${this.filePath} to ${event.version}'"
                 event.script.sh "git push origin ${this.branch}"
             }
         }
