@@ -13,7 +13,7 @@ class SecretFinderPlugin extends Plugin {
 
     SecretFinderPlugin(Map opts = [:]) {
         this.allowFailure = opts.get('allowFailure', false);
-        this.trufflehog = opts.get('trufflehog', 'trufflesecurity/trufflehog:latest');
+        this.trufflehogImage = opts.get('trufflehogImage', 'trufflesecurity/trufflehog:latest');
         this.scanners = opts.get('scanners', [this.TURTLEHOG]);
     }
 
@@ -38,6 +38,6 @@ class SecretFinderPlugin extends Plugin {
     }
 
     private void doTrufflehogScan(Event event) {
-            event.script.sh "docker run -it -v $(pwd):/pwd trufflesecurity/trufflehog:latest git file:///pwd"
+        event.script.sh "docker run -it -v \$(pwd):/pwd ${this.trufflehogImage} git file:///pwd"
     }
 }
