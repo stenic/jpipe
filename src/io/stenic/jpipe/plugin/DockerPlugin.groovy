@@ -54,15 +54,21 @@ class DockerPlugin extends Plugin {
                 } catch(Exception e) {}
             }
 
-            event.script.docker.build(
-                "${this.repository}:${event.version}",
-                "${this.buildArgs} ${this.filePath}"
-            )
-            this.extraTargets.each { target ->
-                event.script.docker.build(
-                    "${this.repository}:${target}",
-                    "--target=${target} ${this.buildArgs} ${this.filePath}"
-                )
+            event.script.withEnv([
+                'DOCKER_BUILDKIT=1'
+            ]) {
+                event.script.sshagent(credentials: [event.script.scm.getUserRemoteConfigs()[0].getCredentialsId()]) {
+                    event.script.docker.build(
+                        "${this.repository}:${event.version}",
+                        "${this.buildArgs} ${this.filePath}"
+                    )
+                    this.extraTargets.each { target ->
+                        event.script.docker.build(
+                            "${this.repository}:${target}",
+                            "--target=${target} ${this.buildArgs} ${this.filePath}"
+                        )
+                    }
+                }
             }
         }
     }
