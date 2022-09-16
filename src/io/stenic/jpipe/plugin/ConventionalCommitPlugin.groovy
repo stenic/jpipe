@@ -9,10 +9,12 @@ class ConventionalCommitPlugin extends Plugin {
 
     private String releaseBranches;
     private String prereleaseBranches;
+    private String extraArgs;
 
     ConventionalCommitPlugin(Map config = [:]) {
         this.releaseBranches = config.get('releaseBranches', 'master,main')
         this.prereleaseBranches = config.get('prereleaseBranches', 'develop')
+        this.extraArgs = config.get('extraArgs', '')
     }
 
     public Map getSubscribedEvents() {
@@ -32,7 +34,7 @@ class ConventionalCommitPlugin extends Plugin {
 
     private String findVersion(script, env) {
         script.docker.image(this.dockerImage).inside {
-            this.runRelease(script, '--dry-run')
+            this.runRelease(script, "--dry-run ${this.extraArgs}")
 
             // Find version
             if (script.fileExists(file: './VERSION')) {
@@ -77,6 +79,7 @@ class ConventionalCommitPlugin extends Plugin {
         script.withEnv([
             "RELEASE_BRANCHES=${this.releaseBranches}",
             "PRERELEASE_BRANCHES=${this.prereleaseBranches}",
+            "GIT_URL=${script.scm.getUserRemoteConfigs()[0].getUrl()}",
         ]) {
             script.sshagent(credentials: [script.scm.getUserRemoteConfigs()[0].getCredentialsId()]) {
                 script.sh "semantic-release ${cmdArgs}"

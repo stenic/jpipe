@@ -3,13 +3,15 @@ const releaseBranches = process.env.RELEASE_BRANCHES || 'main'
 const prereleaseBranches = process.env.PRERELEASE_BRANCHES || 'develop'
 
 const config = {
+  repositoryUrl: process.env.GIT_URL,
   branches: [].concat(
     releaseBranches.split(",").map(branchname => ({ name: branchname })),
     prereleaseBranches.split(",").map(branchname => ({ name: branchname, prerelease: true }))
   ),
   plugins: [
     '@semantic-release/commit-analyzer',
-    '@semantic-release/release-notes-generator', ['@semantic-release/exec', {
+    '@semantic-release/release-notes-generator', 
+    ['@semantic-release/exec', {
       verifyReleaseCmd: 'echo ${nextRelease.version} > VERSION'
     }]
   ]
