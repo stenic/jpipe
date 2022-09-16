@@ -11,8 +11,10 @@ class TrivyPlugin extends Plugin {
     private Boolean ignoreUnfixed;
     private List severity;
     private String trivyVersion;
+    private String report;
     
     TrivyPlugin(Map opts = [:]) {
+        this.report = opts.get('report', 'table');
         this.allowFailure = opts.get('allowFailure', false);
         this.trivyVersion = opts.get('trivyVersion', 'latest');
         this.containerImage = opts.get('containerImage', '');
@@ -36,18 +38,26 @@ class TrivyPlugin extends Plugin {
             return
         }
 
+        List args = [
+            '--no-progress',
+            '--exit-code=1',
+            "--severity ${this.severity.join(',')}",
+        ]
+        if (this.report == 'html') {
+            args.add('--format template  --template "@contrib/html.tpl" -o /report/report.html')
+        }
+        if (this.ignoreUnfixed == true) {
+            args.add('--ignore-unfixed')
+        }
+        args.add(this.extraFlags)
+
         try {
             event.script.sh """
                 docker run \
                     -v /var/run/docker.sock:/var/run/docker.sock \
+                    -v \$(pwd)/.trivy-report:/report \
                     aquasec/trivy:${this.trivyVersion} \
-                    image \
-                        --no-progress \
-                        --exit-code 1 \
-                        --severity ${this.severity.join(',')} \
-                        ${(this.ignoreUnfixed == true) ? '--ignore-unfixed' : ''} \
-                        ${this.extraFlags} \
-                    ${this.containerImage}:${event.version}
+                    image ${args.join(' ')} ${this.containerImage}:${event.version}
             """
         } catch (Exception e) {
             if (this.allowFailure) {
@@ -57,6 +67,18 @@ class TrivyPlugin extends Plugin {
             } else {
                 throw e
             }
+        }
+
+        if (this.report == 'html') {
+            event.script.publishHTML(target: [
+                allowMissing: true,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: '.trivy-report',
+                reportFiles: 'report.html',
+                reportName: 'Trivy Report',
+                reportTitles: 'Trivy Report',
+            ])
         }
     }
 }
