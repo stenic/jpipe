@@ -14,6 +14,7 @@ class DockerPlugin extends Plugin {
     private List extraTargets;
     private Boolean useCache;
     private Boolean doCleanup;
+    private String buildArgVersionKey;
 
     DockerPlugin(Map opts = [:]) {
         this.repository = opts.get('repository', '');
@@ -26,6 +27,7 @@ class DockerPlugin extends Plugin {
         this.testScript = opts.get('testScript', '');
         this.useCache = opts.get('useCache', true);
         this.doCleanup = opts.get('doCleanup', false);
+        this.buildArgVersionKey = opts.get('buildArgVersionKey', 'VERSION');
     }
 
     public Map getSubscribedEvents() {
@@ -65,7 +67,7 @@ class DockerPlugin extends Plugin {
                     this.extraTargets.each { target ->
                         event.script.docker.build(
                             "${this.repository}:${target}",
-                            "--target=${target} ${this.buildArgs} ${this.filePath}"
+                            "--target=${target} ${this.buildArgs} --build-arg ${this.buildArgVersionKey}=${event.version} ${this.filePath}"
                         )
                     }
                 }
