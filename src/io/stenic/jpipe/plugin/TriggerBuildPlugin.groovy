@@ -9,6 +9,7 @@ class TriggerBuildPlugin extends Plugin {
     private Integer eventWeight;
     private Map params;
     private Boolean addVersionParam;
+    private Boolean propagate;
     
     TriggerBuildPlugin(Map opts = [:]) {
         this.jobName = opts.get('jobName');
@@ -16,6 +17,7 @@ class TriggerBuildPlugin extends Plugin {
         this.eventWeight = opts.get('eventWeight', 20);
         this.params = opts.get('params', [:]);
         this.addVersionParam = opts.get('addVersion', true);
+        this.propagate = opts.get('propagate', true);
     }
 
     public Map getSubscribedEvents() {
@@ -35,7 +37,8 @@ class TriggerBuildPlugin extends Plugin {
 
         event.script.build(
             job: this.jobName,
-            parameters: params
+            parameters: params,
+            propagate: this.propagate
         )
     }
 }
