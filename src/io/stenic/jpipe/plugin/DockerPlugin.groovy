@@ -8,10 +8,12 @@ class DockerPlugin extends Plugin {
     private String server;
     private String repository;
     private String buildArgs;
+    private String target;
     private Boolean push;
     private String filePath;
     private String testScript;
     private List extraTargets;
+    private List extraTags;
     private Boolean useCache;
     private Boolean doCleanup;
     private String buildArgVersionKey;
@@ -23,7 +25,9 @@ class DockerPlugin extends Plugin {
         this.buildArgs = opts.get('buildArgs', '');
         this.push = opts.get('push', this.credentialId != '');
         this.filePath = opts.get('filePath', '.');
+        this.target = opts.get('target', '');
         this.extraTargets = opts.get('extraTargets', []);
+        this.extraTags = opts.get('extraTags', []);
         this.testScript = opts.get('testScript', '');
         this.useCache = opts.get('useCache', true);
         this.doCleanup = opts.get('doCleanup', false);
@@ -56,14 +60,22 @@ class DockerPlugin extends Plugin {
                 } catch(Exception e) {}
             }
 
+            def buildArgs = this.buildArgs
+            if (this.target != '') {
+                buildArgs = "--target=${this.target} ${this.buildArgs}"
+            }
+
             event.script.withEnv([
                 'DOCKER_BUILDKIT=1'
             ]) {
                 event.script.sshagent(credentials: [event.script.scm.getUserRemoteConfigs()[0].getCredentialsId()]) {
                     event.script.docker.build(
                         "${this.repository}:${event.version}",
-                        "${this.buildArgs} ${this.filePath}"
+                        "${buildArgs} ${this.filePath}"
                     )
+                    this.extraTags.each { tag ->
+                        event.script.sh "docker tag ${this.repository}:${event.version} ${this.repository}:${tag}"
+                    }
                     this.extraTargets.each { target ->
                         event.script.docker.build(
                             "${this.repository}:${target}",
@@ -87,6 +99,9 @@ class DockerPlugin extends Plugin {
         if (this.push) {
             event.script.docker.withRegistry(this.server, this.credentialId) {
                 event.script.docker.image("${this.repository}:${event.version}").push()
+                this.extraTags.each { tag ->
+                    event.script.docker.image("${this.repository}:${tag}").push()
+                }
                 if (this.useCache) {
                     try {
                         event.script.docker.image("${this.repository}:${event.version}").push('cache')
@@ -105,6 +120,9 @@ class DockerPlugin extends Plugin {
         }
         try {
             event.script.sh "docker rmi ${this.repository}:${event.version}"
+            this.extraTags.each { tag ->
+                event.script.sh "docker rmi ${this.repository}:${tag}"
+            }
             this.extraTargets.each { target ->
                 event.script.sh "docker rmi ${this.repository}:${target}"
             }
