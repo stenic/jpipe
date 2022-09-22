@@ -2,6 +2,9 @@ package io.stenic.jpipe.plugin
 
 import io.stenic.jpipe.event.Event
 import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
+import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
+import jenkins.model.CauseOfInterruption.UserInterruption
+import hudson.model.Result
 
 class SkipCommitPlugin extends Plugin {
     public Map getSubscribedEvents() {
@@ -17,17 +20,17 @@ class SkipCommitPlugin extends Plugin {
         def commitMsg = event.script.sh(script: "git log -n 1 HEAD", returnStdout: true)
         if (commitMsg.matches(/(?ms)(.*\[(skip ci|ci skip)\].*)/)) {
             event.script.currentBuild.description = 'Skipped by [skip ci]'
-            event.script.currentBuild.result = event.script.currentBuild.getPreviousBuild().result
 
-            try {
-                // Try doing a cleanup, required the following methods being approved.
-                // method hudson.model.Run delete
-                // method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild
-                event.script.currentBuild.getRawBuild().delete()
-                event.script.currentBuild.getRawBuild().setResult(hudson.model.Result.fromString(event.script.currentBuild.getPreviousBuild().result))
-            } catch (RejectedAccessException e) {}
+            // try {
+            //     // Try doing a cleanup, required the following methods being approved.
+            //     // method hudson.model.Run delete
+            //     // method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild
 
-            return false
+            //     event.script.currentBuild.getRawBuild().delete()
+            //     event.script.currentBuild.getRawBuild().setResult(Result.fromString(event.script.currentBuild.getPreviousBuild().result))
+            // } catch (RejectedAccessException e) {}
+            
+            throw new FlowInterruptedException(Result.fromString(event.script.currentBuild.getPreviousBuild().result), true, new UserInterruption(event.script.env.BUILD_USER_ID))
         }
 
         return true
