@@ -52,11 +52,12 @@ class TrivyPlugin extends Plugin {
         args.add(this.extraFlags)
 
         event.script.dir(event.script.pwd(tmp: true)) {
+            String imgName = this.containerImage.split('/').last()
             try {
                 event.script.sh """
                     docker run \
                         -v /var/run/docker.sock:/var/run/docker.sock \
-                        -v \$(pwd)/.trivy-report:/report \
+                        -v \$(pwd)/.trivy-report-${imgName}:/report \
                         aquasec/trivy:${this.trivyVersion} \
                         image ${args.join(' ')} ${this.containerImage}:${event.version}
                 """
@@ -75,10 +76,9 @@ class TrivyPlugin extends Plugin {
                     allowMissing: true,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
-                    reportDir: '.trivy-report',
+                    reportDir: ".trivy-report-${imgName}",
                     reportFiles: 'report.html',
-                    reportName: 'Trivy Report',
-                    reportTitles: 'Trivy Report',
+                    reportName: "Trivy - ${imgName}",
                 ])
             }
         }
