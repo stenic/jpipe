@@ -51,34 +51,36 @@ class TrivyPlugin extends Plugin {
         }
         args.add(this.extraFlags)
 
-        try {
-            event.script.sh """
-                docker run \
-                    -v /var/run/docker.sock:/var/run/docker.sock \
-                    -v \$(pwd)/.trivy-report:/report \
-                    aquasec/trivy:${this.trivyVersion} \
-                    image ${args.join(' ')} ${this.containerImage}:${event.version}
-            """
-        } catch (Exception e) {
-            if (this.allowFailure) {
-                event.script.catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+        event.script.dir(event.script.pwd(tmp: true)) {
+            String imgName = this.containerImage.split('/').last()
+            try {
+                event.script.sh """
+                    docker run \
+                        -v /var/run/docker.sock:/var/run/docker.sock \
+                        -v \$(pwd)/.trivy-report-${imgName}:/report \
+                        aquasec/trivy:${this.trivyVersion} \
+                        image ${args.join(' ')} ${this.containerImage}:${event.version}
+                """
+            } catch (Exception e) {
+                if (this.allowFailure) {
+                    event.script.catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        throw e
+                    }
+                } else {
                     throw e
                 }
-            } else {
-                throw e
             }
-        }
 
-        if (this.report == 'html') {
-            event.script.publishHTML(target: [
-                allowMissing: true,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: '.trivy-report',
-                reportFiles: 'report.html',
-                reportName: 'Trivy Report',
-                reportTitles: 'Trivy Report',
-            ])
+            if (this.report == 'html') {
+                event.script.publishHTML(target: [
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: ".trivy-report-${imgName}",
+                    reportFiles: 'report.html',
+                    reportName: "Trivy - ${imgName}",
+                ])
+            }
         }
     }
 }
