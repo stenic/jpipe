@@ -37,6 +37,9 @@ class SonarQubePlugin extends Plugin {
                 event.script.withSonarQubeEnv(credentialsId: this.credentialsId) {
                     event.script.sh "${this.command} -Dsonar.projectKey=${this.projectKey} -Dsonar.projectVersion=${event.version} ${this.extraArguments.join(' ')}"
                 }
+                try {
+                    event.script.sh "rm -rf .scannerwork"
+                } catch (Exception e) {}
             }
         } catch (Exception e) {
             if (this.allowFailure) {
