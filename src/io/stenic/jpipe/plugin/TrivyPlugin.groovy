@@ -83,9 +83,10 @@ class TrivyPlugin extends Plugin {
                     reportName: "Trivy - ${imgName}",
                 ])
             } else if (this.report == 'xml') {
-                event.script.recordIssues tools: [event.script.trivy(pattern: ".trivy-report-${imgName}/report.xml", reportEncoding: 'UTF-8')],
-                    enabledForFailure: true,
-                    aggregatingResults: true
+                event.script.recordIssues tool: event.script.trivy(
+                    pattern: ".trivy-report-${imgName}/report.xml",
+                    reportEncoding: 'UTF-8'
+                )
             }
         }
     }
