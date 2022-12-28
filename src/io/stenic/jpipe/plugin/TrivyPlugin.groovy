@@ -12,7 +12,7 @@ class TrivyPlugin extends Plugin {
     private List severity;
     private String trivyVersion;
     private String report;
-    
+
     TrivyPlugin(Map opts = [:]) {
         this.report = opts.get('report', 'table');
         this.allowFailure = opts.get('allowFailure', false);
@@ -45,6 +45,8 @@ class TrivyPlugin extends Plugin {
         ]
         if (this.report == 'html') {
             args.add('--format template  --template "@contrib/html.tpl" -o /report/report.html')
+        } else if (this.report == 'xml') {
+            args.add('--format template  --template "@contrib/junit.tpl" -o /report/report.xml')
         }
         if (this.ignoreUnfixed == true) {
             args.add('--ignore-unfixed')
@@ -80,6 +82,10 @@ class TrivyPlugin extends Plugin {
                     reportFiles: 'report.html',
                     reportName: "Trivy - ${imgName}",
                 ])
+            } else if (this.report == 'xml') {
+                event.script.recordIssues tools: [event.script.trivy(pattern: '/report/report.xml', reportEncoding: 'UTF-8')],
+                    enabledForFailure: true,
+                    aggregatingResults: true
             }
         }
     }
