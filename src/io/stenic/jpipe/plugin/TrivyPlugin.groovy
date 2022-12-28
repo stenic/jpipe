@@ -45,8 +45,8 @@ class TrivyPlugin extends Plugin {
         ]
         if (this.report == 'html') {
             args.add('--format template  --template "@contrib/html.tpl" -o /report/report.html')
-        } else if (this.report == 'xml') {
-            args.add('--format template  --template "@contrib/junit.tpl" -o /report/report.xml')
+        } else if (this.report == 'json') {
+            args.add('--format json -o /report/report.json')
         }
         if (this.ignoreUnfixed == true) {
             args.add('--ignore-unfixed')
@@ -82,9 +82,9 @@ class TrivyPlugin extends Plugin {
                     reportFiles: 'report.html',
                     reportName: "Trivy - ${imgName}",
                 ])
-            } else if (this.report == 'xml') {
+            } else if (this.report == 'json') {
                 event.script.recordIssues tool: event.script.trivy(
-                    pattern: ".trivy-report-${imgName}/report.xml",
+                    pattern: ".trivy-report-${imgName}/report.json",
                     reportEncoding: 'UTF-8'
                 )
             }
