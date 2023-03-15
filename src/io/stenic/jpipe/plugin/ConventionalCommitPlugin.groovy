@@ -4,12 +4,12 @@ import io.stenic.jpipe.event.Event
 
 class ConventionalCommitPlugin extends Plugin {
 
-    protected String dockerImage = 'stenicbv/release:0.1.13';
-    private Boolean useSemanticRelease = false;
+    protected String dockerImage = 'ghcr.io/stenic/jpipe-release:1.2'
+    private Boolean useSemanticRelease = false
 
-    private String releaseBranches;
-    private String prereleaseBranches;
-    private String extraArgs;
+    private String releaseBranches
+    private String prereleaseBranches
+    private String extraArgs
 
     ConventionalCommitPlugin(Map config = [:]) {
         this.releaseBranches = config.get('releaseBranches', 'master,main')
@@ -58,7 +58,7 @@ class ConventionalCommitPlugin extends Plugin {
     private String deduplicate(script, String version) {
         def i = 1
         def validate = "${version}-${i}"
-        
+
         while (this.tagExists(script, validate)) {
             i++
             validate = "${version}-${i}"
@@ -94,7 +94,6 @@ class ConventionalCommitPlugin extends Plugin {
     private Boolean tagExists(script, tag) {
         return script.sh(script: "git rev-list ${tag} >/dev/null", returnStatus: true) == 0
     }
-
 
     public void doPublish(Event event) {
         this.publishVersion(event.version, event.script, event.env)
