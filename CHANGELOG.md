@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/stenic/jpipe/compare/v1.2.1...v1.2.2) (2023-03-15)
+
+
+### Bug Fixes
+
+* Upgrade to node18 ([2f27018](https://github.com/stenic/jpipe/commit/2f27018873e4ecd408a94c3126df986b850caecb))
+
 ## [1.2.1](https://github.com/stenic/jpipe/compare/v1.2.0...v1.2.1) (2023-03-15)
 
 
