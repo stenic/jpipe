@@ -10,10 +10,12 @@ class ConventionalCommitPlugin extends Plugin {
     private String releaseBranches
     private String prereleaseBranches
     private String extraArgs
+    private Boolean useLegacyStrategy
 
     ConventionalCommitPlugin(Map config = [:]) {
         this.releaseBranches = config.get('releaseBranches', 'master,main')
         this.prereleaseBranches = config.get('prereleaseBranches', 'develop')
+        this.useLegacyStrategy = config.get('useLegacyStrategy', false)
         this.extraArgs = config.get('extraArgs', '')
     }
 
@@ -51,7 +53,17 @@ class ConventionalCommitPlugin extends Plugin {
                 return version
             }
 
-            return this.deduplicate(script, env.BRANCH_NAME.replaceAll('[^0-9a-zA-Z-]', '-').toLowerCase())
+            String cleanBranch = env.BRANCH_NAME.replaceAll('[^0-9a-zA-Z-]', '-').toLowerCase()
+            String lastTag = this.getLastTag(script).replaceFirst(/-[0-9]+$/, '')
+            if (lastTag == '' || this.useLegacyStrategy) {
+                return this.deduplicate(script, cleanBranch)
+            }
+
+            if (!this.releaseBranches.split(',').contains(env.BRANCH_NAME)) {
+                lastTag += "-${cleanBranch}"
+            }
+
+            return this.deduplicate(script, lastTag)
         }
     }
 
@@ -93,6 +105,18 @@ class ConventionalCommitPlugin extends Plugin {
 
     private Boolean tagExists(script, tag) {
         return script.sh(script: "git rev-list ${tag} >/dev/null", returnStatus: true) == 0
+    }
+
+    private String getLastTag(script) {
+        def lastTag = script.sh(script: 'git describe --tags --abbrev=0', returnStdout: true).trim()
+        def p = ~'^(v[0-9]+.[0-9]+.[0-9]+)(-.*)?'
+        def matcher = p.matcher(lastTag)
+
+        if (matcher.matches()) {
+            return matcher[0][1]
+        }
+
+        return ''
     }
 
     public void doPublish(Event event) {
