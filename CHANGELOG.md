@@ -1,5 +1,62 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [1.2.0](https://github.com/stenic/jpipe/compare/v1.1.3...v1.2.0) (2023-03-15)
+
+
+### Bug Fixes
+
+* **release:** Fix build ([49c4e5c](https://github.com/stenic/jpipe/commit/49c4e5cc8f5402cfea9205ae7c818bc78575794f))
+* Publish jpipe release image ([d003a72](https://github.com/stenic/jpipe/commit/d003a7291540e7430a3702eec39fb724111bde80))
+* **cdInfra:** Allow empty commit ([ccf8993](https://github.com/stenic/jpipe/commit/ccf89932360ddf5eb7f7844cd541e869e1e3e292))
+* **conventional-commit:** Add extraArgs ([7f647ab](https://github.com/stenic/jpipe/commit/7f647ab1f64dd66c87274f93021ae4ebe7038d5c))
+* **docker:** Handle push correct ([6a8b46f](https://github.com/stenic/jpipe/commit/6a8b46fbf88feb802d18137db0de611770c92dcc))
+* **plugin:** Allow yq image overwrite ([403565c](https://github.com/stenic/jpipe/commit/403565ca19523f66fad895ee56322dc58bd76f7d))
+* **plugin:** Optional cleanup ([c22db82](https://github.com/stenic/jpipe/commit/c22db82bb4024e1eafa48d8f850bdadbd7d84a4c))
+* **skip-ci:** Allow users to re-trigger the build ([e003227](https://github.com/stenic/jpipe/commit/e00322795389bd31925eb3fddc5a74b719b5d616))
+* **sonarqube:** Cleanup workdir ([a029c8b](https://github.com/stenic/jpipe/commit/a029c8b333bb2d4e11a1f962e1ed283efeebbb1f))
+* Docker tags break with uppercase branches ([08dafe1](https://github.com/stenic/jpipe/commit/08dafe1b6ffe04e46c3e0d9ecd3d1778a69faf2d))
+* **skip:** Abort build ([6ea9592](https://github.com/stenic/jpipe/commit/6ea9592eb6d0f9ca3c4abd4f5dbb73f54fcdd4d5))
+* **trivy:** Split reporting ([27e7df5](https://github.com/stenic/jpipe/commit/27e7df50403316b9b309b673ca30ff3be2719b9d))
+* Strip weird chars from version ([e41b90f](https://github.com/stenic/jpipe/commit/e41b90f13bd74a56235f4116b4934ade2fb570eb))
+* **trivy:** Report in tmp dir ([362a22d](https://github.com/stenic/jpipe/commit/362a22d33e4cc4985a367d94b3fc1f8bba986d23))
+* Strip weird chars from version ([2bc708d](https://github.com/stenic/jpipe/commit/2bc708d2069e3a008b6c0137d86536a441d8cce7))
+* **cdInfra:** Allow empty commit ([a48d32d](https://github.com/stenic/jpipe/commit/a48d32d58aa4d41a3ee4f75f62e40ef61e61d5ef))
+* **docker:** Also push targets ([c173d30](https://github.com/stenic/jpipe/commit/c173d30678dc506a73da169c67f23845d22a1a3f))
+* **docker:** Handle push correct ([2e156e2](https://github.com/stenic/jpipe/commit/2e156e2a8dcbfd3a3d3bd2ff7f31c5a09995eb3b))
+* **sonarqube:** Handle allowFailure correct ([91519c7](https://github.com/stenic/jpipe/commit/91519c778b904be16684e6be1ebd59e490bf5835))
+* **sonarqube:** Handle allowFailure correct ([2b15e8c](https://github.com/stenic/jpipe/commit/2b15e8cd5875204aac05a0f3cf0c30238dcd74f4))
+
+
+### Features
+
+* **argocd:** Add argoCDSync plugin ([12d7507](https://github.com/stenic/jpipe/commit/12d750702674d01ab2f86783487e342b80536845))
+* **argocd:** Add argoCDSync plugin ([a9fdecb](https://github.com/stenic/jpipe/commit/a9fdecbb036b67d991a4da3c1714cdbad895681a))
+* **argocd-sync-plugin:** Allow app sync options ([40e6b63](https://github.com/stenic/jpipe/commit/40e6b631513418c9565119412c0e623d285f79c8))
+* **docker:** Add target and extra tags ([defaa0d](https://github.com/stenic/jpipe/commit/defaa0d7412f19ed708908f8dbf986c93d14bc02))
+* **docker:** Enable docker cache fetching/pushing ([db2d9c3](https://github.com/stenic/jpipe/commit/db2d9c3387fd26c0b655946c6f1b1f749a734cbc))
+* **docker:** Inject build version ([03627eb](https://github.com/stenic/jpipe/commit/03627eb2f66bbf2125247ea74919be9a9d9157fc))
+* **docker:** Try to cleanup images ([79fb164](https://github.com/stenic/jpipe/commit/79fb164909ffba78fcf35dca7f16c864ea484c3f))
+* **dockerPlugin:** Add buildkit support ([9ef1575](https://github.com/stenic/jpipe/commit/9ef1575bbd71625f3cc9b306f442628fe136afb9))
+* **pipeline:** Don't show empty stages ([afa3a7b](https://github.com/stenic/jpipe/commit/afa3a7b0318cf98df6d4fcb7cdfa3e56adb62c68))
+* **sonarqube:** Enhance sonarqube options ([5cd86cd](https://github.com/stenic/jpipe/commit/5cd86cdc905124d9f514a23a9cc72392b61c881a))
+* **sonarqube:** Set project version ([010bb77](https://github.com/stenic/jpipe/commit/010bb7764efca09e2b87c555c6f3765e3ccee70a))
+* **sonarqube:** Set project version ([cded4b7](https://github.com/stenic/jpipe/commit/cded4b7556532df90b9e92b89fb73b39dd6ee14c))
+* **trigger:** Allow disable error propagation ([01b22da](https://github.com/stenic/jpipe/commit/01b22dac27b0682f23b607bcf985f86b98608a17))
+* **trivy:** Add html report ([7a9304a](https://github.com/stenic/jpipe/commit/7a9304aee6f05e1021a9fd94a30acf005d8896f8))
+* **trivy:** Add html report ([a662dcc](https://github.com/stenic/jpipe/commit/a662dccae807149cb3de83834d18abafcd7f33d5))
+* Add EcrPlugin to ensure repo's exist ([c7b1ab3](https://github.com/stenic/jpipe/commit/c7b1ab32de159fd1366885a2233b5174fddb7d4f))
+* Add SecretFinderPlugin ([3efce71](https://github.com/stenic/jpipe/commit/3efce715ebb45acdac04a857130a9623952c654b))
+* Allow always running iac ([2c77e52](https://github.com/stenic/jpipe/commit/2c77e524a75bd515df834303bd955a84a455088f))
+* **trigger:** Add triggerBuildPlugin ([e846243](https://github.com/stenic/jpipe/commit/e84624398faa80582dc7309f15ef1cf8fdbbf0e4))
+* **trigger:** Allow passing custom params ([9ed5db1](https://github.com/stenic/jpipe/commit/9ed5db11c4d96ebe4f13889ac81bc27407d9a97c))
+* **trivy:** Add TrivyPlugin ([b83b638](https://github.com/stenic/jpipe/commit/b83b638e8730924c02ade9425607fe252fce54bd))
+* Allow always running iac ([a2dc698](https://github.com/stenic/jpipe/commit/a2dc698144b7ec10a68f8bbdca38604f3d7487a2))
+
+# Changelog
+
 ## [1.1.3](https://github.com/stenic/jpipe/compare/v1.1.2...v1.1.3) (2021-02-06)
 
 
