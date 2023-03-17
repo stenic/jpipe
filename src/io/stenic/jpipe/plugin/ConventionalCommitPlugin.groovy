@@ -81,7 +81,7 @@ class ConventionalCommitPlugin extends Plugin {
 
     private runRelease(script, cmdArgs) {
         Boolean configCreated = false
-        String configFile = 'release.config.js'
+        String configFile = 'release.config.cjs'
         if (!script.fileExists("./${configFile}")) {
             def releasercCfg = script.libraryResource "io/stenic/jpipe/release/${configFile}"
             script.writeFile file: configFile, text: releasercCfg
