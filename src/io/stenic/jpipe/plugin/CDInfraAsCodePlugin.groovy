@@ -5,26 +5,26 @@ import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
 
 class CDInfraAsCodePlugin extends Plugin {
 
-    private String yqDockerImage;
-    private String credentialId;
-    private String repository;
-    private String branch;
-    private String filePath;
-    private String yamlPath;
-    private String cdBranch;
-    private String gitUser;
-    private String gitEmail;
+    private String yqDockerImage
+    private String credentialId
+    private String repository
+    private String branch
+    private String filePath
+    private String yamlPath
+    private String cdBranch
+    private String gitUser
+    private String gitEmail
 
     CDInfraAsCodePlugin(Map opts = [:]) {
-        this.repository = opts.get('repository', '');
-        this.credentialId = opts.get('credentialId', '');
-        this.cdBranch = opts.get('cdBranch', 'main');
-        this.branch = opts.get('branch', 'master');
-        this.yamlPath = opts.get('yamlPath', '.image.tag');
-        this.filePath = opts.get('filePath', 'values.yaml');
-        this.gitUser = opts.get('gitUser', 'jpipe-ci');
-        this.gitEmail = opts.get('gitEmail', 'jpipe@stenic.io');
-        this.yqDockerImage = opts.get('dockerImage', 'mikefarah/yq:4');
+        this.repository = opts.get('repository', '')
+        this.credentialId = opts.get('credentialId', '')
+        this.cdBranch = opts.get('cdBranch', 'main')
+        this.branch = opts.get('branch', 'master')
+        this.yamlPath = opts.get('yamlPath', '.image.tag')
+        this.filePath = opts.get('filePath', 'values.yaml')
+        this.gitUser = opts.get('gitUser', 'jpipe-ci')
+        this.gitEmail = opts.get('gitEmail', 'jpipe@stenic.io')
+        this.yqDockerImage = opts.get('dockerImage', 'mikefarah/yq:4')
     }
 
     public Map getSubscribedEvents() {
@@ -36,25 +36,35 @@ class CDInfraAsCodePlugin extends Plugin {
     }
 
     public Boolean doYamlUpdate(Event event) {
-        if (this.cdBranch == "" || event.env.BRANCH_NAME != this.cdBranch) {
-            event.script.println("Skipping CDInfraAsCodePlugin")
-            return true;
+        if (this.cdBranch == '' || event.env.BRANCH_NAME != this.cdBranch) {
+            event.script.println('Skipping CDInfraAsCodePlugin')
+            return true
         }
 
         if (this.credentialId == '') {
-            this.credentialId = event.script.scm.getUserRemoteConfigs()[0].getCredentialsId();
+            this.credentialId = event.script.scm.getUserRemoteConfigs()[0].getCredentialsId()
         }
 
-        event.script.dir( "${System.currentTimeMillis()}" ) {
+        if (event.script.metaClass.properties.find { it.name == 'lock' } != null) {
+            event.script.lock("infrarepo-${this.repository}") {
+                return this.doCommit(event)
+            }
+        }
+
+        return this.doCommit(event)
+}
+
+    private Boolean doCommit(Event event) {
+        event.script.dir("${System.currentTimeMillis()}") {
             event.script.git(
                 url: this.repository,
                 branch: this.branch,
                 credentialsId: this.credentialId,
                 changelog: false
-            );
+            )
 
             event.script.docker.image(this.yqDockerImage).inside("--entrypoint=''") {
-                event.script.sh "yq eval --inplace '${this.yamlPath} = \"${event.version}\"' ${this.filePath}";
+                event.script.sh "yq eval --inplace '${this.yamlPath} = \"${event.version}\"' ${this.filePath}"
             }
 
             event.script.sshagent(credentials: [this.credentialId]) {
@@ -66,7 +76,6 @@ class CDInfraAsCodePlugin extends Plugin {
                 event.script.sh "git push origin ${this.branch}"
             }
         }
-
-        return true
     }
+
 }
