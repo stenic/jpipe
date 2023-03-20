@@ -5,7 +5,7 @@ import java.lang.Exception
 
 class SecretFinderPlugin extends Plugin {
 
-    public static final String TURTLEHOG = "TURTLEHOG";
+    public static final String TRUFFELHOG = "TRUFFELHOG";
 
     private Boolean allowFailure;
     private String trufflehogImage;
@@ -14,7 +14,7 @@ class SecretFinderPlugin extends Plugin {
     SecretFinderPlugin(Map opts = [:]) {
         this.allowFailure = opts.get('allowFailure', false);
         this.trufflehogImage = opts.get('trufflehogImage', 'trufflesecurity/trufflehog:latest');
-        this.scanners = opts.get('scanners', [this.TURTLEHOG]);
+        this.scanners = opts.get('scanners', [this.TRUFFELHOG]);
     }
 
     public Map getSubscribedEvents() {
@@ -27,7 +27,7 @@ class SecretFinderPlugin extends Plugin {
 
     public void doScan(Event event) {
         try {
-            if (this.scanners.contains(this.TURTLEHOG)) {
+            if (this.scanners.contains(this.TRUFFELHOG)) {
                 doTrufflehogScan(event)
             }
         } catch (Exception e) {
