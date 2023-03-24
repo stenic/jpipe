@@ -4,15 +4,15 @@ import io.stenic.jpipe.event.Event
 
 class EcrPlugin extends Plugin {
 
-    protected String dockerImage = 'amazon/aws-cli';
-    private String credentialsId;
-    private String repository;
-    private String region;
+    protected String dockerImage = 'amazon/aws-cli'
+    private String credentialsId
+    private String repository
+    private String region
 
     EcrPlugin(Map opts = [:]) {
-        this.repository = opts.get('repository', '');
-        this.credentialsId = opts.get('credentialsId', '');
-        this.region = opts.get('region', '');
+        this.repository = opts.get('repository', '')
+        this.credentialsId = opts.get('credentialsId', '')
+        this.region = opts.get('region', '')
     }
 
     public Map getSubscribedEvents() {
@@ -41,4 +41,5 @@ class EcrPlugin extends Plugin {
             }
         }
     }
+
 }
