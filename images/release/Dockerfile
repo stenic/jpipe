@@ -15,8 +15,11 @@ RUN npm install -g \
 WORKDIR /app
 
 RUN mkdir -p /home/node/.ssh/ \
-	&& ssh-keyscan -t rsa github.com >> /home/node/.ssh/known_hosts \
 	&& ssh-keyscan -t rsa gitlab.com >> /home/node/.ssh/known_hosts \
-	&& ssh-keyscan -t rsa bitbucket.org >> /home/node/.ssh/known_hosts
+	&& ssh-keyscan -t rsa bitbucket.org >> /home/node/.ssh/known_hosts \
+	&& ssh-keyscan -t rsa github.com >> /home/node/.ssh/known_hosts \
+	&& apk add --no-cache --virtual tooling jq curl \
+	&& curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> /home/node/.ssh/known_hosts \
+	&& apk del tooling
 
 ENTRYPOINT [""]
