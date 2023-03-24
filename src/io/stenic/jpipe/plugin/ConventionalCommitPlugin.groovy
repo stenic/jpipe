@@ -4,7 +4,7 @@ import io.stenic.jpipe.event.Event
 
 class ConventionalCommitPlugin extends Plugin {
 
-    protected String dockerImage = 'ghcr.io/stenic/jpipe-release:1.2'
+    protected String dockerImage = 'ghcr.io/stenic/jpipe-release:1.3'
     private Boolean useSemanticRelease = false
 
     private String releaseBranches
