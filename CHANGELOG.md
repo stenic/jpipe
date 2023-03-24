@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.3](https://github.com/stenic/jpipe/compare/v1.3.2...v1.3.3) (2023-03-24)
+
+
+### Bug Fixes
+
+* github host-key entry https://github.blog/2023-03-23-we-updated-our-rsa-ssh-host-key/ ([b9a435b](https://github.com/stenic/jpipe/commit/b9a435bcdb4e42fe15f6d0f025e0b9bdf014536b))
+
 ## [1.3.2](https://github.com/stenic/jpipe/compare/v1.3.1...v1.3.2) (2023-03-24)
 
 
