@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.4](https://github.com/stenic/jpipe/compare/v1.3.3...v1.3.4) (2023-06-21)
+
+
+### Bug Fixes
+
+* Handle bitbucket key rotation ([3caa92d](https://github.com/stenic/jpipe/commit/3caa92df6822a3066f672e6e050f6eea3d748219))
+
 ## [1.3.3](https://github.com/stenic/jpipe/compare/v1.3.2...v1.3.3) (2023-03-24)
 
 
