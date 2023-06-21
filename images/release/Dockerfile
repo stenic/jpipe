@@ -14,6 +14,8 @@ RUN npm install -g \
 
 WORKDIR /app
 
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+
 RUN mkdir -p /home/node/.ssh/ \
 	&& ssh-keyscan -t rsa gitlab.com >> /home/node/.ssh/known_hosts \
 	&& ssh-keyscan -t rsa bitbucket.org >> /home/node/.ssh/known_hosts \
