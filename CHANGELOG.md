@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.5](https://github.com/stenic/jpipe/compare/v1.3.4...v1.3.5) (2023-07-05)
+
+
+### Bug Fixes
+
+* Add version to main build ([1861abc](https://github.com/stenic/jpipe/commit/1861abc9462d17099a56e54ef91de0472c734708))
+
 ## [1.3.4](https://github.com/stenic/jpipe/compare/v1.3.3...v1.3.4) (2023-06-21)
 
 
