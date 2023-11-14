@@ -4,34 +4,34 @@ import io.stenic.jpipe.event.Event
 
 class DockerPlugin extends Plugin {
 
-    private String credentialId;
-    private String server;
-    private String repository;
-    private String buildArgs;
-    private String target;
-    private Boolean push;
-    private String filePath;
-    private String testScript;
-    private List extraTargets;
-    private List extraTags;
-    private Boolean useCache;
-    private Boolean doCleanup;
-    private String buildArgVersionKey;
+    private String credentialId
+    private String server
+    private String repository
+    private String buildArgs
+    private String target
+    private Boolean push
+    private String filePath
+    private String testScript
+    private List extraTargets
+    private List extraTags
+    private Boolean useCache
+    private Boolean doCleanup
+    private String buildArgVersionKey
 
     DockerPlugin(Map opts = [:]) {
-        this.repository = opts.get('repository', '');
-        this.credentialId = opts.get('credentialId', '');
-        this.server = opts.get('server', 'http://index.docker.io');
-        this.buildArgs = opts.get('buildArgs', '');
-        this.push = opts.get('push', this.credentialId != '');
-        this.filePath = opts.get('filePath', '.');
-        this.target = opts.get('target', '');
-        this.extraTargets = opts.get('extraTargets', []);
-        this.extraTags = opts.get('extraTags', []);
-        this.testScript = opts.get('testScript', '');
-        this.useCache = opts.get('useCache', true);
-        this.doCleanup = opts.get('doCleanup', false);
-        this.buildArgVersionKey = opts.get('buildArgVersionKey', 'VERSION');
+        this.repository = opts.get('repository', '')
+        this.credentialId = opts.get('credentialId', '')
+        this.server = opts.get('server', 'http://index.docker.io')
+        this.buildArgs = opts.get('buildArgs', '')
+        this.push = opts.get('push', this.credentialId != '')
+        this.filePath = opts.get('filePath', '.')
+        this.target = opts.get('target', '')
+        this.extraTargets = opts.get('extraTargets', [])
+        this.extraTags = opts.get('extraTags', [])
+        this.testScript = opts.get('testScript', '')
+        this.useCache = opts.get('useCache', true)
+        this.doCleanup = opts.get('doCleanup', false)
+        this.buildArgVersionKey = opts.get('buildArgVersionKey', 'VERSION')
     }
 
     public Map getSubscribedEvents() {
@@ -57,8 +57,8 @@ class DockerPlugin extends Plugin {
                     this.extraTargets.each { target ->
                         event.script.docker.image("${this.repository}:cache-${target}").pull()
                     }
-                } catch(Exception e) {}
-            }
+                } catch (Exception e) { }
+                }
 
             def buildArgs = this.buildArgs
             if (this.target != '') {
@@ -71,7 +71,7 @@ class DockerPlugin extends Plugin {
                 event.script.sshagent(credentials: [event.script.scm.getUserRemoteConfigs()[0].getCredentialsId()]) {
                     event.script.docker.build(
                         "${this.repository}:${event.version}",
-                        "${buildArgs} ${this.filePath}"
+                        "${buildArgs} --build-arg ${this.buildArgVersionKey}=${event.version} ${this.filePath}"
                     )
                     this.extraTags.each { tag ->
                         event.script.sh "docker tag ${this.repository}:${event.version} ${this.repository}:${tag}"
@@ -84,8 +84,8 @@ class DockerPlugin extends Plugin {
                     }
                 }
             }
+            }
         }
-    }
 
     public void doTest(Event event) {
         if (this.testScript != '') {
@@ -108,11 +108,11 @@ class DockerPlugin extends Plugin {
                         this.extraTargets.each { target ->
                             event.script.docker.image("${this.repository}:${target}").push("cache-${target}")
                         }
-                    } catch(Exception e) {}
+                    } catch (Exception e) { }
+                    }
                 }
             }
         }
-    }
 
     public void doDockerCleanup(Event event) {
         if (!this.doCleanup) {
@@ -133,6 +133,7 @@ class DockerPlugin extends Plugin {
                 }
             }
             event.script.sh 'docker rmi -f $(docker images -f "dangling=true" -q)'
-        } catch(Exception e) {} 
+        } catch (Exception e) { }
+        }
+
     }
-}

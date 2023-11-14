@@ -45,7 +45,7 @@ class CDInfraAsCodePlugin extends Plugin {
             this.credentialId = event.script.scm.getUserRemoteConfigs()[0].getCredentialsId()
         }
 
-        if (event.script.metaClass.properties.find { it.name == 'lock' } != null) {
+        if (this.hasPlugin('lockable-resources')) {
             event.script.lock("infrarepo-${this.repository}") {
                 return this.doCommit(event)
             }
@@ -75,6 +75,14 @@ class CDInfraAsCodePlugin extends Plugin {
                 event.script.sh "git commit --allow-empty -m 'Update version ${this.filePath} to ${event.version}'"
                 event.script.sh "git push origin ${this.branch}"
             }
+        }
+    }
+
+    private Boolean hasPlugin(String pluginName) {
+        try {
+            return jenkins.model.Jenkins.instance.getPluginManager().getPlugin(pluginName) != null
+        } catch (RejectedAccessException e) {
+            return false
         }
     }
 
