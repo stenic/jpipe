@@ -11,12 +11,14 @@ class ConventionalCommitPlugin extends Plugin {
     private String prereleaseBranches
     private String extraArgs
     private Boolean useLegacyStrategy
+    private List extraEnv
 
     ConventionalCommitPlugin(Map config = [:]) {
         this.releaseBranches = config.get('releaseBranches', 'master,main')
         this.prereleaseBranches = config.get('prereleaseBranches', 'develop')
         this.useLegacyStrategy = config.get('useLegacyStrategy', false)
         this.extraArgs = config.get('extraArgs', '')
+        this.extraEnv = config.get('extraEnv', [])
     }
 
     public Map getSubscribedEvents() {
@@ -88,11 +90,13 @@ class ConventionalCommitPlugin extends Plugin {
             configCreated = true
         }
 
-        script.withEnv([
+        List env = this.extraEnv + [
             "RELEASE_BRANCHES=${this.releaseBranches}",
             "PRERELEASE_BRANCHES=${this.prereleaseBranches}",
             "GIT_URL=${script.scm.getUserRemoteConfigs()[0].getUrl()}",
-        ]) {
+        ]
+
+        script.withEnv(env) {
             script.sshagent(credentials: [script.scm.getUserRemoteConfigs()[0].getCredentialsId()]) {
                 script.sh "semantic-release ${cmdArgs}"
             }
