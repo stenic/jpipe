@@ -139,9 +139,22 @@ class ConventionalCommitPlugin extends Plugin {
             return true
         }
 
-        script.sshagent(credentials: [script.scm.getUserRemoteConfigs()[0].getCredentialsId()]) {
-            script.sh "git tag ${version}"
-            script.sh "git push origin ${version}"
+        script.sh "git tag ${version}"
+        def gitUrl = script.scm.getUserRemoteConfigs()[0].getUrl()
+        def credentialsId = script.scm.getUserRemoteConfigs()[0].getCredentialsId()
+        if (gitUrl.startsWith('https') {
+            script.withCredentials([script.usernamePassword(
+                credentialsId: credentialsId,
+                usernameVariable: 'GIT_USERNAME',
+                passwordVariable: 'GIT_PASSWORD'
+            )]) {
+                def gitUrlWithCreds = gitUrl.replaceFirst(/https:\/\//, "https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@")
+                script.sh "git push ${gitUrlWithCreds} ${version}"
+            }
+        } else {
+            script.sshagent(credentials: [credentialsId]) {
+                script.sh "git push origin ${version}"
+            }
         }
 
         return true
