@@ -142,7 +142,7 @@ class ConventionalCommitPlugin extends Plugin {
         script.sh "git tag ${version}"
         def gitUrl = script.scm.getUserRemoteConfigs()[0].getUrl()
         def credentialsId = script.scm.getUserRemoteConfigs()[0].getCredentialsId()
-        if (gitUrl.startsWith('https') {
+        if (gitUrl.startsWith('https')) {
             script.withCredentials([script.usernamePassword(
                 credentialsId: credentialsId,
                 usernameVariable: 'GIT_USERNAME',
