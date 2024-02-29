@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/stenic/jpipe/compare/v1.3.5...v1.4.0) (2024-02-29)
+
+
+### Bug Fixes
+
+* Allow locking ([2437233](https://github.com/stenic/jpipe/commit/24372331b00ae8d820d95596a70c626d816a8329))
+* Do credential magic to support https ([ceb3656](https://github.com/stenic/jpipe/commit/ceb3656613ba94f3cb953fa464d0007a297435bb))
+* Rename config to ensure type: module works ([7facb5c](https://github.com/stenic/jpipe/commit/7facb5cc1ec68a1cf00bb76ab8a6d9abb950469f))
+* Syntax error ([6594f78](https://github.com/stenic/jpipe/commit/6594f789e600ef4f69ed35d687801e91cb1c3931))
+* **secretScanner:** Correct name ([86e1e57](https://github.com/stenic/jpipe/commit/86e1e57e4e4643198459cac9a4f4c8fee7dd319e))
+* **trivy:** Optimizations ([533e37a](https://github.com/stenic/jpipe/commit/533e37a7f872198a2cae9ccb7c48b84e5d3d6af2))
+* **trivy:** Switch XML support to JSON ([64e9323](https://github.com/stenic/jpipe/commit/64e9323d33d63f8de3e3bbe10a82a3d09228be66))
+* **trivy:** Use correct report location ([9dd41b2](https://github.com/stenic/jpipe/commit/9dd41b21197d23f16d1d7fc680804b1eda0ba7f7))
+
+
+### Features
+
+* Add support for extra env vars ([22c353e](https://github.com/stenic/jpipe/commit/22c353ea13f60d30766927f6f7bbbb88de10f951))
+* **cd:** Add lock if available ([817e736](https://github.com/stenic/jpipe/commit/817e7360c95714510f5aab8040887fa9f219b535))
+* **trivy:** Add XML format support ([0fbfb2c](https://github.com/stenic/jpipe/commit/0fbfb2cb154ade88113baf1109d906900325d263))
+
 ## [1.3.5](https://github.com/stenic/jpipe/compare/v1.3.4...v1.3.5) (2023-07-05)
 
 
