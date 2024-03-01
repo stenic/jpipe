@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.3](https://github.com/stenic/jpipe/compare/v1.4.2...v1.4.3) (2024-03-01)
+
+
+### Bug Fixes
+
+* Final action bump ([513074a](https://github.com/stenic/jpipe/commit/513074a9e46fe1dff9521811d6b955fced05dc43))
+
 ## [1.4.2](https://github.com/stenic/jpipe/compare/v1.4.1...v1.4.2) (2024-03-01)
 
 
