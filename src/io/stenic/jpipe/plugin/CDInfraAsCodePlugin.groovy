@@ -72,8 +72,19 @@ class CDInfraAsCodePlugin extends Plugin {
                 event.script.sh "git config user.name '${this.gitUser}'"
 
                 event.script.sh "git add ${this.filePath}"
-                event.script.sh "git commit --allow-empty -m 'Update version ${this.filePath} to ${event.version}'"
-                event.script.sh "git push origin ${this.branch}"
+
+                // Only commit when there are staged changes; skip the push when
+                // nothing changed (e.g. version was already set by a previous run).
+                int status = event.script.sh(
+                    script: 'git diff --cached --quiet',
+                    returnStatus: true
+                )
+                if (status != 0) {
+                    event.script.sh "git commit -m 'Update version ${this.filePath} to ${event.version}'"
+                    event.script.sh "git push origin ${this.branch}"
+                } else {
+                    event.script.println("CDInfraAsCodePlugin: no changes in ${this.filePath}, skipping commit")
+                }
             }
         }
     }
