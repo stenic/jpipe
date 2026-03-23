@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.5](https://github.com/stenic/jpipe/compare/v1.4.4...v1.4.5) (2026-03-23)
+
+
+### Bug Fixes
+
+* use ghcr.io/aquasecurity/trivy instead of deprecated aquasec/trivy ([a2b932d](https://github.com/stenic/jpipe/commit/a2b932d26bf487837a6640fb1b2b0aca04c7b58e))
+
 ## [1.4.4](https://github.com/stenic/jpipe/compare/v1.4.3...v1.4.4) (2026-03-10)
 
 
