@@ -60,7 +60,7 @@ class TrivyPlugin extends Plugin {
                     docker run \
                         -v /var/run/docker.sock:/var/run/docker.sock \
                         -v \$(pwd)/.trivy-report-${imgName}:/report \
-                        aquasec/trivy:${this.trivyVersion} \
+                        ghcr.io/aquasecurity/trivy:${this.trivyVersion} \
                         image ${args.join(' ')} ${this.containerImage}:${event.version}
                 """
             } catch (Exception e) {
