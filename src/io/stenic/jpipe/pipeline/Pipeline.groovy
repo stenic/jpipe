@@ -25,6 +25,7 @@ class Pipeline implements Serializable {
         event.env = env;
         event.version = env.BUILD_ID;
         event.setScript(this.script)
+        event.setEventDispatcher(this.eventDispatcher)
 
         this.script.stage("Prepare") {
             this.eventDispatcher.dispatch("Prepare", event)
