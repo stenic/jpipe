@@ -28,6 +28,12 @@ class SkipCommitPlugin extends Plugin {
             }
             event.script.currentBuild.description = 'Skipped by [skip ci]'
 
+            // Notify subscribers (e.g. SCM status notifiers) that this build is being
+            // skipped, so they can publish a terminal commit status before we abort.
+            // SkipCommitPlugin stays SCM-agnostic; concrete notifiers live in user code.
+            event.data.reason = 'Skipped by [skip ci]'
+            event.eventDispatcher?.dispatch(Event.SKIPPED, event)
+
             // try {
             //     // Try doing a cleanup, required the following methods being approved.
             //     // method hudson.model.Run delete
