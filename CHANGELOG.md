@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/stenic/jpipe/compare/v1.4.5...v1.5.0) (2026-06-11)
+
+
+### Bug Fixes
+
+* don't attach UserInterruption with null user id on [skip ci] abort ([3bfb1f0](https://github.com/stenic/jpipe/commit/3bfb1f03f769be6b4b62dfa587db857ef71876ea))
+* repair maven test setup ([09fd98a](https://github.com/stenic/jpipe/commit/09fd98a4dbaee79badc690478a5dc7b4c148f9f9))
+
+
+### Features
+
+* emit SKIPPED event from SkipCommitPlugin ([5608e9e](https://github.com/stenic/jpipe/commit/5608e9e2327bb5dec2ee7da1954f31af405fe565))
+
 ## [1.4.5](https://github.com/stenic/jpipe/compare/v1.4.4...v1.4.5) (2026-03-23)
 
 
