@@ -3,7 +3,6 @@ package io.stenic.jpipe.plugin
 import io.stenic.jpipe.event.Event
 import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
-import jenkins.model.CauseOfInterruption.UserInterruption
 import hudson.model.Result
 
 class SkipCommitPlugin extends Plugin {
@@ -43,7 +42,14 @@ class SkipCommitPlugin extends Plugin {
             //     event.script.currentBuild.getRawBuild().setResult(Result.fromString(event.script.currentBuild.getPreviousBuild().result))
             // } catch (RejectedAccessException e) {}
 
-            throw new FlowInterruptedException(Result.fromString(event.script.currentBuild.getPreviousBuild().result), true, new UserInterruption(event.script.env.BUILD_USER_ID))
+            // Do not attach a UserInterruption cause: [skip ci] builds are SCM-triggered,
+            // so BUILD_USER_ID is null. UserInterruption stores the null user id and its
+            // hashCode() NPEs inside FlowInterruptedException.handle() during
+            // WorkflowRun.finish(), which aborts completion before
+            // RunListener.fireCompleted() runs. That skips the GitHub Branch Source
+            // final commit status, leaving the commit stuck on "pending".
+            // actualInterruption is false because nobody actually interrupted the build.
+            throw new FlowInterruptedException(Result.fromString(event.script.currentBuild.getPreviousBuild()?.result ?: 'SUCCESS'), false)
         }
 
         return true
