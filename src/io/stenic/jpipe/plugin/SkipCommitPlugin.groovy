@@ -1,9 +1,7 @@
 package io.stenic.jpipe.plugin
 
 import io.stenic.jpipe.event.Event
-import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
-import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
-import hudson.model.Result
+import io.stenic.jpipe.event.PipelineHalted
 
 class SkipCommitPlugin extends Plugin {
     public Map getSubscribedEvents() {
@@ -27,29 +25,26 @@ class SkipCommitPlugin extends Plugin {
             }
             event.script.currentBuild.description = 'Skipped by [skip ci]'
 
+            // Carry the previous build's result forward onto this skipped run.
+            // currentBuild.result starts null (treated as SUCCESS); we set it
+            // explicitly so the run reflects the last real build's outcome.
+            event.script.currentBuild.result = event.script.currentBuild.getPreviousBuild()?.result ?: 'SUCCESS'
+
             // Notify subscribers (e.g. SCM status notifiers) that this build is being
-            // skipped, so they can publish a terminal commit status before we abort.
+            // skipped, so they can publish a terminal commit status. Without this the
+            // Jenkins GitHub Branch Source plugin's "pending" status on indexing never
+            // gets overwritten, leaving the commit stuck on pending.
             // SkipCommitPlugin stays SCM-agnostic; concrete notifiers live in user code.
             event.data.reason = 'Skipped by [skip ci]'
             event.eventDispatcher?.dispatch(Event.SKIPPED, event)
 
-            // try {
-            //     // Try doing a cleanup, required the following methods being approved.
-            //     // method hudson.model.Run delete
-            //     // method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild
-
-            //     event.script.currentBuild.getRawBuild().delete()
-            //     event.script.currentBuild.getRawBuild().setResult(Result.fromString(event.script.currentBuild.getPreviousBuild().result))
-            // } catch (RejectedAccessException e) {}
-
-            // Do not attach a UserInterruption cause: [skip ci] builds are SCM-triggered,
-            // so BUILD_USER_ID is null. UserInterruption stores the null user id and its
-            // hashCode() NPEs inside FlowInterruptedException.handle() during
-            // WorkflowRun.finish(), which aborts completion before
-            // RunListener.fireCompleted() runs. That skips the GitHub Branch Source
-            // final commit status, leaving the commit stuck on "pending".
-            // actualInterruption is false because nobody actually interrupted the build.
-            throw new FlowInterruptedException(Result.fromString(event.script.currentBuild.getPreviousBuild()?.result ?: 'SUCCESS'), false)
+            // Stop the pipeline. PipelineHalted is caught by Pipeline.run(), so the
+            // run finishes cleanly with the result set above and still fires the
+            // post-build status notifier for GitHub. We deliberately do NOT throw
+            // FlowInterruptedException: that aborts the run (gray/red ball) even
+            // though the Prepare stage is green, which is exactly the "stage green,
+            // run not green" symptom for [skip ci] builds.
+            throw new PipelineHalted('Skipped by [skip ci]')
         }
 
         return true
